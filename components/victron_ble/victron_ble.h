@@ -919,16 +919,19 @@ class VictronBle : public esp32_ble_tracker::ESPBTDeviceListener, public Compone
 
   void set_address(uint64_t address) { this->address_ = address; }
 
-  std::string address_str() const {
-  char buf[18];  // "XX:XX:XX:XX:XX:XX" = 17 znaków + '\0'
-  snprintf(buf, sizeof(buf), "%02X:%02X:%02X:%02X:%02X:%02X",
+  inline std::string address_str() const {
+    if (this->address_ == 0) {
+      return "";
+    }
+    char buf[18];  // "XX:XX:XX:XX:XX:XX" = 17 chars + '\0'
+    snprintf(buf, sizeof(buf), "%02X:%02X:%02X:%02X:%02X:%02X",
              (uint8_t) ((this->address_ >> 40) & 0xff),
              (uint8_t) ((this->address_ >> 32) & 0xff),
              (uint8_t) ((this->address_ >> 24) & 0xff),
              (uint8_t) ((this->address_ >> 16) & 0xff),
              (uint8_t) ((this->address_ >> 8) & 0xff),
              (uint8_t) (this->address_ & 0xff));
-   return std::string(buf);
+    return std::string(buf);
   }
 
   void set_bindkey(std::array<uint8_t, 16> key) { this->bindkey_ = key; }
